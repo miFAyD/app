@@ -134,6 +134,26 @@
       animation: slideUp 0.35s ease;
     }
 
+    .inst-logo-large {
+      width: 76px;
+      height: 76px;
+      object-fit: contain;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      background: #FFFFFF;
+      padding: 4px;
+      margin-bottom: 12px;
+    }
+
+    .inst-logo-small {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      border-radius: var(--radius-sm);
+      background: #FFFFFF;
+      padding: 2px;
+    }
+
     .brand-badge {
       display: inline-block;
       background: linear-gradient(135deg, var(--primary) 0%, #818CF8 100%);
@@ -146,17 +166,17 @@
       margin-bottom: 12px;
     }
 
-    .auth-title { font-size: 28px; font-weight: 900; letter-spacing: -0.6px; margin-bottom: 4px; }
-    .auth-subtitle { font-size: 14px; color: var(--primary); font-weight: 700; margin-bottom: 20px; }
+    .auth-title { font-size: 26px; font-weight: 900; letter-spacing: -0.6px; margin-bottom: 4px; }
+    .auth-subtitle { font-size: 13px; color: var(--primary); font-weight: 700; margin-bottom: 18px; }
 
     .auth-box {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-lg);
-      padding: 20px;
+      padding: 18px;
       box-shadow: var(--shadow-md);
       text-align: left;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .form-group { margin-bottom: 12px; }
@@ -195,7 +215,7 @@
       text-align: center;
       font-size: 12px;
       color: var(--text-muted);
-      margin: 14px 0;
+      margin: 12px 0;
       position: relative;
     }
     .divider-text::before, .divider-text::after {
@@ -226,6 +246,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .user-status-pill {
@@ -446,7 +472,71 @@
       flex-shrink: 0;
     }
 
-    /* PLANO REAL SVG */
+    /* TRÁMITES */
+    .tramite-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .tramite-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      text-align: left;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+      width: 100%;
+    }
+
+    .tramite-btn:active {
+      transform: scale(0.98);
+      border-color: var(--primary);
+    }
+
+    .t-icon { font-size: 24px; }
+    .t-content strong { display: block; font-size: 14px; color: var(--text-primary); }
+    .t-content small { font-size: 12px; color: var(--text-muted); }
+
+    .faq-block { margin-top: 24px; }
+    .accordion { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .acc-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .acc-header {
+      width: 100%;
+      padding: 14px;
+      background: none;
+      border: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      text-align: left;
+    }
+    .acc-arrow { font-size: 18px; transition: transform 0.2s ease; }
+    .acc-item.open .acc-arrow { transform: rotate(90deg); }
+    .acc-body {
+      display: none;
+      padding: 0 14px 14px 14px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+    }
+    .acc-item.open .acc-body { display: block; }
+
+    /* SVG MAP */
     .svg-map-wrapper {
       background: var(--bg-card);
       border-radius: var(--radius-lg);
@@ -502,7 +592,7 @@
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 3px; background: none; border: none; color: var(--text-muted); cursor: pointer;
     }
-    .nav-icon { font-size: 19px; }
+    .nav-icon { font-size: 18px; }
     .nav-text { font-size: 10px; font-weight: 600; }
     .nav-item.active { color: var(--primary); }
 
@@ -560,7 +650,7 @@
     <!-- MODAL DE ACCESO / LOGIN -->
     <div id="auth-screen" class="auth-overlay">
       <div class="auth-card">
-        <span class="brand-badge">FAyD • UNaM</span>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXeK27plpFWz5ZUI25sOV2u-IBBDpuqFnGHqaXErsIMQ&s=10" alt="FAyD UNaM" class="inst-logo-large">
         <h1 class="auth-title">Mi FAyD</h1>
         <p class="auth-subtitle">“Tu facultad, más cerca.”</p>
 
@@ -613,7 +703,7 @@
     <header class="app-header">
       <div class="header-content">
         <div class="brand">
-          <span class="brand-badge" style="margin:0;">FAyD</span>
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXeK27plpFWz5ZUI25sOV2u-IBBDpuqFnGHqaXErsIMQ&s=10" alt="FAyD Logo" class="inst-logo-small">
           <strong style="font-size:18px;">Mi FAyD</strong>
         </div>
         <div id="user-status" class="user-status-pill" title="Gestionar cuenta">
@@ -637,7 +727,7 @@
           <span class="next-badge">Panel FAyD</span>
           <h4 class="next-class-name" id="home-status-title">Facultad de Arte y Diseño</h4>
           <div class="next-class-meta" id="home-status-desc">
-            <span>Acceso directo a horarios de cursada, exámenes y plano de aulas.</span>
+            <span>Acceso directo a horarios de cursada, exámenes, trámites y plano de aulas.</span>
           </div>
         </div>
 
@@ -650,9 +740,9 @@
             <span>📝</span>
             <span class="quick-label">Exámenes</span>
           </button>
-          <button class="quick-btn" data-action="nav-plans">
-            <span>📑</span>
-            <span class="quick-label">Planes</span>
+          <button class="quick-btn" data-action="nav-tramites">
+            <span>❓</span>
+            <span class="quick-label">Trámites</span>
           </button>
           <button class="quick-btn" data-action="nav-map">
             <span>📍</span>
@@ -706,7 +796,7 @@
         <div id="classes-list" class="cards-list"></div>
       </section>
 
-      <!-- VISTA: EXÁMENES (MESAS DE EXAMEN POR CARRERA) -->
+      <!-- VISTA: EXÁMENES -->
       <section id="view-exams" class="view-section">
         <div class="view-header">
           <div>
@@ -728,6 +818,101 @@
         </select>
 
         <div id="exams-list" class="cards-list"></div>
+      </section>
+
+      <!-- VISTA: TRÁMITES -->
+      <section id="view-tramites" class="view-section">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">¿Dónde hago mi trámite?</h2>
+            <p class="view-subtitle">Asistente ágil de orientación universitaria</p>
+          </div>
+        </div>
+
+        <div class="assistant-block">
+          <h3 style="font-size:14px; font-weight:700; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px;">
+            ¿Qué necesitás hacer hoy?
+          </h3>
+          <div class="tramite-options" id="tramite-options">
+            <button class="tramite-btn" data-tramite="regular">
+              <span class="t-icon">📄</span>
+              <div class="t-content">
+                <strong>Certificado de alumno regular</strong>
+                <small>Para obra social, transporte o trabajo</small>
+              </div>
+            </button>
+            <button class="tramite-btn" data-tramite="examen">
+              <span class="t-icon">📝</span>
+              <div class="t-content">
+                <strong>Inscripción a mesas de examen</strong>
+                <small>Plazos y acceso a SIU-Guaraní</small>
+              </div>
+            </button>
+            <button class="tramite-btn" data-tramite="academica">
+              <span class="t-icon">🎓</span>
+              <div class="t-content">
+                <strong>Consulta académica</strong>
+                <small>Correlatividades, planes de estudio o bajas</small>
+              </div>
+            </button>
+            <button class="tramite-btn" data-tramite="becas">
+              <span class="t-icon">💰</span>
+              <div class="t-content">
+                <strong>Becas y Comedor</strong>
+                <small>Albergue, comedor universitario y Progresar</small>
+              </div>
+            </button>
+            <button class="tramite-btn" data-tramite="administrativo">
+              <span class="t-icon">📑</span>
+              <div class="t-content">
+                <strong>Trámite administrativo general</strong>
+                <small>Presentación de títulos o equivalencias</small>
+              </div>
+            </button>
+            <button class="tramite-btn" data-tramite="otra">
+              <span class="t-icon">❓</span>
+              <div class="t-content">
+                <strong>Otra consulta / Dudas de ingresante</strong>
+                <small>Centro de estudiantes o tutorías</small>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <div class="faq-block">
+          <h3 style="font-size:14px; font-weight:700; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px;">
+            ¿A quién le pregunto?
+          </h3>
+          <div class="accordion">
+            <div class="acc-item">
+              <button class="acc-header">
+                <span>⚠️ Tengo un problema con una materia o docente</span>
+                <span class="acc-arrow">›</span>
+              </button>
+              <div class="acc-body">
+                Hablalo con el docente a cargo o con la <strong>Secretaría Académica</strong> (Módulo 1 PB). Podés acudir también al Centro de Estudiantes (CEFAD) para apoyo y orientación.
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-header">
+                <span>📍 No encuentro un aula o taller práctico</span>
+                <span class="acc-arrow">›</span>
+              </button>
+              <div class="acc-body">
+                Consultá la sección <strong>Plano</strong> de esta app, o preguntá en <strong>Bedelía / Dirección de Estudios</strong> (frente al patio central).
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-header">
+                <span>🚌 Boleto Estudiantil Misionero (BEM)</span>
+                <span class="acc-arrow">›</span>
+              </button>
+              <div class="acc-body">
+                Tramitá tu constancia en SIU-Guaraní y presentala en la Secretaría de Asuntos Estudiantiles (SAE) o mediante el sistema provincial habilitado.
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- VISTA: PLANES DE ESTUDIO -->
@@ -921,43 +1106,6 @@
         </div>
       </section>
 
-      <!-- VISTA: TRÁMITES -->
-      <section id="view-tramites" class="view-section">
-        <div class="view-header">
-          <div>
-            <h2 class="view-title">Trámites FAyD</h2>
-            <p class="view-subtitle">Guía de gestión universitaria</p>
-          </div>
-        </div>
-
-        <div class="cards-list">
-          <div class="item-card">
-            <div>
-              <div class="card-title">📄 Certificado de Alumno Regular</div>
-              <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">
-                Se descarga digitalmente con QR de validación en <strong>SIU-Guaraní</strong>. Si requerís firma física, solicitalo en <strong>Dirección de Estudios (Alumnado)</strong> en Planta Baja del Módulo 1.
-              </p>
-            </div>
-          </div>
-          <div class="item-card">
-            <div>
-              <div class="card-title">📝 Inscripción a Mesas de Examen</div>
-              <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">
-                Exclusivamente vía SIU-Guaraní hasta 48 horas hábiles antes de la mesa evaluadora.
-              </p>
-            </div>
-          </div>
-          <div class="item-card">
-            <div>
-              <div class="card-title">🍲 Comedor Universitario y Albergue</div>
-              <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">
-                Gestionado por la Secretaría de Asuntos Estudiantiles (SAE) en el Pabellón Sur, junto al Playón Deportivo.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- VISTA: CONFIGURACIÓN -->
       <section id="view-more" class="view-section">
         <div class="view-header">
@@ -1004,6 +1152,10 @@
       <button class="nav-item" data-nav="exams">
         <span class="nav-icon">📝</span>
         <span class="nav-text">Exámenes</span>
+      </button>
+      <button class="nav-item" data-nav="tramites">
+        <span class="nav-icon">❓</span>
+        <span class="nav-text">Trámites</span>
       </button>
       <button class="nav-item" data-nav="plans">
         <span class="nav-icon">📑</span>
@@ -1062,10 +1214,20 @@
       </div>
     </div>
 
+    <!-- MODAL DETALLE DE TRÁMITE -->
+    <div id="modal-tramite-overlay" class="sheet-overlay hidden">
+      <div class="bottom-sheet">
+        <div class="sheet-header">
+          <h3 class="sheet-title" id="modal-tramite-title">Detalle de Trámite</h3>
+          <button id="btn-close-tramite-modal" class="close-btn">&times;</button>
+        </div>
+        <div id="modal-tramite-body"></div>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    // BASE DE DATOS COMPLETA DE HORARIOS Y PLANES (NOMBRES REALES)
     const DATA_REPO = {
       pet: {
         name: "Profesorado en Educación Tecnológica",
@@ -1333,6 +1495,51 @@
       }
     };
 
+    const TRAMITES_DATA = {
+      regular: {
+        title: 'Certificado de Alumno Regular',
+        area: 'Bedelía / SIU-Guaraní',
+        ubicacion: 'Planta Baja - Frente al Patio Central',
+        horario: 'Lunes a Viernes de 07:30 a 12:30 y de 14:00 a 19:00 hs',
+        info: 'Podés descargarlo digitalmente con código QR desde el portal SIU-Guaraní en "Trámites". Si lo necesitás con firma y sello físico, solicitalo en ventanilla de Bedelía.'
+      },
+      examen: {
+        title: 'Inscripción a Mesas de Examen',
+        area: 'Plataforma SIU-Guaraní',
+        ubicacion: 'Online / Consulta en Bedelía',
+        horario: 'Hasta 48 hs hábiles antes de la mesa',
+        info: 'El trámite se realiza exclusivamente en SIU-Guaraní. Verificá si te anotás en condición regular o libre y guardá siempre el número de comprobante.'
+      },
+      academica: {
+        title: 'Consultas Académicas y Planes de Estudio',
+        area: 'Secretaría Académica',
+        ubicacion: 'Planta Baja - Sector Administrativo',
+        horario: 'Lunes a Viernes de 08:00 a 13:00 hs',
+        info: 'Gestión de correlatividades, solicitudes de equivalencias de materias, cambio de plan o consultas directas de cursado.'
+      },
+      becas: {
+        title: 'Becas, Albergue y Comedor Universitario',
+        area: 'Secretaría de Asuntos Estudiantiles',
+        ubicacion: 'Edificio de Extensión y Comedor',
+        horario: 'Lunes a Viernes de 08:00 a 14:00 hs',
+        info: 'Información y trámites para tickets del Comedor Universitario de Oberá, albergues estudiantiles, boleto estudiantil y becas Progresar.'
+      },
+      administrativo: {
+        title: 'Trámite Administrativo General',
+        area: 'Mesa de Entradas',
+        ubicacion: 'Ingreso Principal',
+        horario: 'Lunes a Viernes de 07:00 a 13:00 hs',
+        info: 'Presentación formal de notas dirigidas a Decanato, certificados analíticos legalizados o documentación general.'
+      },
+      otra: {
+        title: 'Consultas y Apoyo al Ingresante',
+        area: 'Centro de Estudiantes (CEFAD) y Tutorías Pares',
+        ubicacion: 'Patio Central',
+        horario: 'Turno mañana y tarde',
+        info: 'Apoyo con apuntes, fotocopias, dudas de adaptación o consultas sobre la vida universitaria en Oberá.'
+      }
+    };
+
     // CONTROL DE SESIÓN
     const AuthSession = {
       isIdentified: false,
@@ -1399,7 +1606,7 @@
       }
     };
 
-    // GESTIÓN DE EXÁMENES (MESAS)
+    // GESTIÓN DE EXÁMENES
     const ExamsManager = {
       getKey() {
         return AuthSession.isIdentified ? `mifayd_exams_${AuthSession.userEmail}` : 'mifayd_exams_guest';
@@ -1458,7 +1665,6 @@
         const careerModalSelect = document.getElementById('modal-exam-career');
         careerModalSelect.innerHTML = `<option value="${careerKey}">${career.name}</option>`;
 
-        // Llenar select con las materias oficiales del plan de la carrera
         const subjectSelect = document.getElementById('modal-exam-subject-select');
         subjectSelect.innerHTML = '';
         career.plan.forEach(m => {
@@ -1468,7 +1674,6 @@
           subjectSelect.appendChild(opt);
         });
 
-        // Sugerir fecha a partir de hoy
         document.getElementById('modal-exam-date').value = '2026-10-15';
         document.getElementById('modal-exam-overlay').classList.remove('hidden');
       },
@@ -1478,7 +1683,7 @@
       },
 
       daysRemaining(dateStr) {
-        const today = new Date(2026, 9, 7); // 7 de octubre de 2026
+        const today = new Date(2026, 9, 7);
         const parts = dateStr.split('-');
         const target = new Date(parts[0], parts[1] - 1, parts[2]);
         const diff = target - today;
@@ -1506,7 +1711,6 @@
           return;
         }
 
-        // Ordenar por fecha
         filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
 
         filtered.forEach(e => {
@@ -1546,6 +1750,38 @@
       }
     };
 
+    const TramitesView = {
+      init() {
+        document.querySelectorAll('.tramite-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const item = TRAMITES_DATA[btn.dataset.tramite];
+            if (!item) return;
+
+            document.getElementById('modal-tramite-title').textContent = item.title;
+            document.getElementById('modal-tramite-body').innerHTML = `
+              <div style="background:var(--primary-light); padding:12px; border-radius:var(--radius-md); margin-bottom:14px;">
+                <p style="font-size:13px; color:var(--primary); font-weight:700;">🏢 Área: ${item.area}</p>
+                <p style="font-size:12px; color:var(--text-secondary); margin-top:2px;">📍 ${item.ubicacion}</p>
+                <p style="font-size:12px; color:var(--text-secondary); margin-top:2px;">🕐 ${item.horario}</p>
+              </div>
+              <p style="font-size:13px; line-height:1.6; color:var(--text-primary);">${item.info}</p>
+            `;
+            document.getElementById('modal-tramite-overlay').classList.remove('hidden');
+          });
+        });
+
+        document.getElementById('btn-close-tramite-modal').addEventListener('click', () => {
+          document.getElementById('modal-tramite-overlay').classList.add('hidden');
+        });
+
+        document.querySelectorAll('.acc-header').forEach(btn => {
+          btn.addEventListener('click', () => {
+            btn.parentElement.classList.toggle('open');
+          });
+        });
+      }
+    };
+
     const Navigation = {
       init() {
         document.querySelectorAll('.nav-item').forEach(btn => {
@@ -1557,6 +1793,7 @@
             const action = btn.dataset.action;
             if (action === 'nav-classes') this.navigateTo('classes');
             if (action === 'nav-exams') this.navigateTo('exams');
+            if (action === 'nav-tramites') this.navigateTo('tramites');
             if (action === 'nav-plans') this.navigateTo('plans');
             if (action === 'nav-map') this.navigateTo('map');
           });
@@ -1598,7 +1835,6 @@
           greetingEl.textContent = `Hola ${AuthSession.userEmail.split('@')[0]} 👋`;
           cardTitle.textContent = `${DATA_REPO[AuthSession.career].name}`;
           
-          // Buscar si hay exámenes próximos
           const exams = ExamsManager.getAll().filter(e => e.careerKey === AuthSession.career);
           if (exams.length > 0) {
             exams.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -1632,7 +1868,7 @@
         } else {
           greetingEl.textContent = 'Facultad de Arte y Diseño 👋';
           cardTitle.textContent = 'Información General FAyD';
-          cardDesc.innerHTML = '<span>Consultá los horarios oficiales de cursada, mesas de examen y planes de estudio.</span>';
+          cardDesc.innerHTML = '<span>Consultá los horarios oficiales de cursada, mesas de examen, trámites y planes de estudio.</span>';
           timeline.innerHTML = '<p style="font-size:12px; color:var(--text-muted); padding:10px 0;">Identificate con tu correo para personalizar tus horarios y mesas.</p>';
         }
       }
@@ -1785,6 +2021,7 @@
       Navigation.init();
       ClassesView.init();
       ExamsView.init();
+      TramitesView.init();
       PlansView.init();
       MapView.init();
       AuthSession.init();
