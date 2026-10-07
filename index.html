@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#4F46E5">
+  <title>Mi FAyD — Tu facultad, más cerca</title>
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-hover: #4338CA;
+      --primary-light: #EEF2FF;
+      --primary-glow: rgba(79, 70, 229, 0.15);
+      
+      --secondary: #0D9488;
+      --accent: #F59E0B;
+      --danger: #EF4444;
+      --danger-light: #FEE2E2;
+      --success: #10B981;
+
+      --bg-app: #F8FAFC;
+      --bg-body: #F1F5F9;
+      --bg-card: #FFFFFF;
+      --bg-input: #F8FAFC;
+      
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #94A3B8;
+      --border-color: #E2E8F0;
+      
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 14px -2px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 10px 25px -3px rgba(15, 23, 42, 0.12);
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+
+      --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --nav-height: 68px;
+      --safe-bottom: env(safe-area-inset-bottom, 10px);
+    }
+
+    body.dark-mode {
+      --primary: #6366F1;
+      --primary-hover: #4F46E5;
+      --primary-light: rgba(99, 102, 241, 0.15);
+      --primary-glow: rgba(99, 102, 241, 0.25);
+
+      --bg-app: #090D16;
+      --bg-body: #0F172A;
+      --bg-card: #1E293B;
+      --bg-input: #131C2E;
+
+      --text-primary: #F8FAFC;
+      --text-secondary: #CBD5E1;
+      --text-muted: #64748B;
+      --border-color: #334155;
+
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 14px -2px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    input, textarea, select { user-select: text; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: var(--bg-body);
+      font-family: var(--font-family);
+      color: var(--text-primary);
+      overflow: hidden;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 480px;
+      height: 100dvh;
+      margin: 0 auto;
+      background-color: var(--bg-app);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 40px rgba(0,0,0,0.12);
+    }
+
+    @media (min-width: 768px) {
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle at center, #E0E7FF 0%, #CBD5E1 100%);
+      }
+      body.dark-mode {
+        background: radial-gradient(circle at center, #1E1B4B 0%, #020617 100%);
+      }
+      .app-shell {
+        height: 94vh;
+        max-height: 920px;
+        border-radius: 36px;
+        border: 8px solid rgba(15, 23, 42, 0.85);
+      }
+    }
+
+    /* PANTALLA DE ACCESO */
+    .auth-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-app) 100%);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .auth-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .auth-card {
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      animation: slideUp 0.35s ease;
+    }
+
+    .brand-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary) 0%, #818CF8 100%);
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .auth-title { font-size: 28px; font-weight: 900; letter-spacing: -0.6px; margin-bottom: 4px; }
+    .auth-subtitle { font-size: 14px; color: var(--primary); font-weight: 700; margin-bottom: 20px; }
+
+    .auth-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-md);
+      text-align: left;
+      margin-bottom: 14px;
+    }
+
+    .form-group { margin-bottom: 12px; }
+    .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; }
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-size: 13px;
+      outline: none;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      border-radius: var(--radius-md);
+      border: none;
+      padding: 12px 18px;
+      font-size: 13px;
+      cursor: pointer;
+      width: 100%;
+      text-decoration: none;
+      gap: 6px;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
+    .btn-sm { padding: 6px 12px; font-size: 12px; width: auto; }
+
+    .divider-text {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 14px 0;
+      position: relative;
+    }
+    .divider-text::before, .divider-text::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 42%;
+      height: 1px;
+      background: var(--border-color);
+    }
+    .divider-text::before { left: 0; }
+    .divider-text::after { right: 0; }
+
+    /* HEADER */
+    .app-header {
+      height: 58px;
+      background-color: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .header-content {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-body);
+      border: 1px solid var(--border-color);
+      padding: 5px 10px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .avatar-circle {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 16px 16px calc(var(--nav-height) + var(--safe-bottom) + 16px) 16px;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+
+    .view-section {
+      display: none;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .view-section.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .view-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .view-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+    .view-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+    /* INICIO */
+    .greeting-box { margin-bottom: 16px; }
+    .greeting-title { font-size: 24px; font-weight: 800; }
+    .greeting-date { font-size: 13px; color: var(--text-muted); text-transform: capitalize; }
+
+    .next-class-card {
+      background: linear-gradient(135deg, var(--primary) 0%, #3730A3 100%);
+      color: #FFFFFF;
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      box-shadow: 0 10px 22px var(--primary-glow);
+      position: relative;
+      margin-bottom: 16px;
+    }
+    .next-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      padding: 4px 8px;
+      border-radius: var(--radius-full);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 8px;
+    }
+    .next-class-name { font-size: 18px; font-weight: 800; line-height: 1.2; margin-bottom: 8px; }
+    .next-class-meta { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; opacity: 0.95; }
+
+    .quick-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .quick-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+    }
+    .quick-btn span:first-child { font-size: 20px; }
+    .quick-label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-align: center; }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      padding-left: 18px;
+      margin-top: 8px;
+    }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 5px; top: 6px; bottom: 6px; width: 2px;
+      background: var(--border-color);
+    }
+    .timeline-item { position: relative; margin-bottom: 14px; }
+    .timeline-dot {
+      position: absolute; left: -18px; top: 6px; width: 12px; height: 12px;
+      border-radius: 50%; background: var(--primary); border: 2px solid var(--bg-app);
+    }
+    .timeline-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* FILTROS & LISTADOS */
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      scrollbar-width: none;
+    }
+    .filter-row::-webkit-scrollbar { display: none; }
+
+    .pill-btn {
+      padding: 7px 14px;
+      border-radius: var(--radius-full);
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .pill-btn.active {
+      background: var(--primary);
+      color: #FFFFFF;
+      border-color: var(--primary);
+    }
+
+    .select-dropdown {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 13px;
+      outline: none;
+      margin-bottom: 12px;
+    }
+
+    .cards-list { display: flex; flex-direction: column; gap: 10px; }
+    .item-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .card-title { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+    .card-meta { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+    .card-meta-pill {
+      background: var(--bg-body);
+      padding: 2px 7px;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+    }
+    .correlativa-box {
+      margin-top: 8px;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-body);
+      font-size: 11px;
+      color: var(--text-secondary);
+      border-left: 3px solid var(--primary);
+    }
+
+    .badge-countdown {
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 6px 10px;
+      border-radius: var(--radius-md);
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      min-width: 75px;
+      flex-shrink: 0;
+    }
+
+    /* PLANO REAL SVG */
+    .svg-map-wrapper {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+    .svg-map-wrapper svg { width: 100%; height: auto; display: block; }
+    .map-room rect, .map-room path {
+      fill: var(--primary-light);
+      stroke: var(--primary);
+      stroke-width: 1.2;
+      cursor: pointer;
+    }
+    .map-room text {
+      fill: var(--text-primary);
+      font-size: 10px;
+      font-weight: 700;
+      pointer-events: none;
+    }
+    .map-room:hover rect, .map-room.active rect,
+    .map-room:hover path, .map-room.active path {
+      fill: var(--primary) !important;
+      stroke: var(--primary-hover) !important;
+    }
+    .map-room:hover text, .map-room.active text { fill: #FFFFFF !important; }
+    .street-tag { font-size: 9px; font-weight: 700; fill: var(--text-muted); }
+
+    .map-selection-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px;
+    }
+    .map-selection-card.hidden { display: none; }
+
+    /* NAVEGACIÓN INFERIOR */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: calc(var(--nav-height) + var(--safe-bottom));
+      padding-bottom: var(--safe-bottom);
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 20;
+    }
+    .nav-item {
+      flex: 1; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 3px; background: none; border: none; color: var(--text-muted); cursor: pointer;
+    }
+    .nav-icon { font-size: 19px; }
+    .nav-text { font-size: 10px; font-weight: 600; }
+    .nav-item.active { color: var(--primary); }
+
+    /* MODAL / BOTTOM SHEET */
+    .sheet-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(4px);
+      z-index: 600;
+      display: flex;
+      align-items: flex-end;
+      opacity: 1;
+      transition: opacity 0.25s ease;
+    }
+    .sheet-overlay.hidden { opacity: 0; pointer-events: none; }
+    .bottom-sheet {
+      width: 100%;
+      max-height: 85%;
+      background: var(--bg-card);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      padding: 14px 20px calc(20px + var(--safe-bottom)) 20px;
+      box-shadow: var(--shadow-lg);
+      overflow-y: auto;
+    }
+    .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .sheet-title { font-size: 17px; font-weight: 800; }
+    .close-btn { background: none; border: none; font-size: 24px; color: var(--text-muted); cursor: pointer; }
+
+    .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--border-color); border-radius: 34px; transition: .3s;
+    }
+    .slider:before {
+      position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+      background-color: white; border-radius: 50%; transition: .3s;
+    }
+    input:checked + .slider { background-color: var(--primary); }
+    input:checked + .slider:before { transform: translateX(20px); }
+
+    @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+
+  <div id="app-shell" class="app-shell">
+
+    <!-- MODAL DE ACCESO / LOGIN -->
+    <div id="auth-screen" class="auth-overlay">
+      <div class="auth-card">
+        <span class="brand-badge">FAyD • UNaM</span>
+        <h1 class="auth-title">Mi FAyD</h1>
+        <p class="auth-subtitle">“Tu facultad, más cerca.”</p>
+
+        <div class="auth-box">
+          <h3 style="font-size:14px; margin-bottom:10px; font-weight:800;">Acceso Estudiante</h3>
+          <p style="font-size:12px; color:var(--text-secondary); margin-bottom:12px;">
+            Ingresá tu correo para guardar y filtrar automáticamente tus cursadas y mesas de examen.
+          </p>
+          <form id="form-login">
+            <div class="form-group">
+              <label class="form-label">Correo electrónico</label>
+              <input type="email" id="input-email" class="form-control" placeholder="ej. alumno@fayd.unam.edu.ar" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Carrera principal</label>
+              <select id="input-career" class="form-control">
+                <option value="pet">Profesorado en Educación Tecnológica</option>
+                <option value="tmaf">Técnico en Medios Audiovisuales y Fotografía</option>
+                <option value="tc">Tecnología Cerámica</option>
+                <option value="pap">Profesorado en Artes Plásticas</option>
+                <option value="lap">Licenciatura en Artes Plásticas</option>
+                <option value="dg">Diseño Gráfico</option>
+                <option value="di">Diseño Industrial</option>
+                <option value="aut">Arquitectura, Urbanismo y Territorio</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Año que cursás</label>
+              <select id="input-year" class="form-control">
+                <option value="1">1.° Año</option>
+                <option value="2">2.° Año</option>
+                <option value="3">3.° Año</option>
+                <option value="4">4.° Año</option>
+                <option value="5">5.° Año</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top:6px;">Ingresar y Cargar Mis Datos</button>
+          </form>
+        </div>
+
+        <div class="divider-text">o bien</div>
+
+        <button id="btn-guest-access" class="btn btn-outline">
+          Consultar Información General (Invitado)
+        </button>
+      </div>
+    </div>
+
+    <!-- HEADER SUPERIOR -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="brand">
+          <span class="brand-badge" style="margin:0;">FAyD</span>
+          <strong style="font-size:18px;">Mi FAyD</strong>
+        </div>
+        <div id="user-status" class="user-status-pill" title="Gestionar cuenta">
+          <div id="avatar-icon" class="avatar-circle">?</div>
+          <span id="user-display-label">Invitado</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ÁREA DE CONTENIDO -->
+    <main id="main-content" class="main-content">
+
+      <!-- VISTA: INICIO -->
+      <section id="view-home" class="view-section active">
+        <div class="greeting-box">
+          <h2 id="home-greeting" class="greeting-title">Bienvenido/a 👋</h2>
+          <p id="home-date" class="greeting-date">Miércoles 7 de octubre de 2026</p>
+        </div>
+
+        <div class="next-class-card" id="home-next-card">
+          <span class="next-badge">Panel FAyD</span>
+          <h4 class="next-class-name" id="home-status-title">Facultad de Arte y Diseño</h4>
+          <div class="next-class-meta" id="home-status-desc">
+            <span>Acceso directo a horarios de cursada, exámenes y plano de aulas.</span>
+          </div>
+        </div>
+
+        <div class="quick-actions-grid">
+          <button class="quick-btn" data-action="nav-classes">
+            <span>📚</span>
+            <span class="quick-label">Horarios</span>
+          </button>
+          <button class="quick-btn" data-action="nav-exams">
+            <span>📝</span>
+            <span class="quick-label">Exámenes</span>
+          </button>
+          <button class="quick-btn" data-action="nav-plans">
+            <span>📑</span>
+            <span class="quick-label">Planes</span>
+          </button>
+          <button class="quick-btn" data-action="nav-map">
+            <span>📍</span>
+            <span class="quick-label">Plano</span>
+          </button>
+        </div>
+
+        <h3 style="font-size:14px; font-weight:700; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px;">
+          Tu día en la facu
+        </h3>
+        <div id="day-timeline" class="timeline"></div>
+      </section>
+
+      <!-- VISTA: HORARIOS -->
+      <section id="view-classes" class="view-section">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">Horarios de Cursada</h2>
+            <p class="view-subtitle">Ciclo Lectivo 2026</p>
+          </div>
+        </div>
+
+        <select id="classes-career-select" class="select-dropdown">
+          <option value="pet">Profesorado en Educación Tecnológica</option>
+          <option value="tmaf">Técnico en Medios Audiovisuales y Fotografía</option>
+          <option value="tc">Tecnología Cerámica</option>
+          <option value="pap">Profesorado en Artes Plásticas</option>
+          <option value="lap">Licenciatura en Artes Plásticas</option>
+          <option value="dg">Diseño Gráfico</option>
+          <option value="di">Diseño Industrial</option>
+          <option value="aut">Arquitectura, Urbanismo y Territorio</option>
+        </select>
+
+        <div class="filter-row" id="classes-year-filter">
+          <button class="pill-btn active" data-year="1">1.° Año</button>
+          <button class="pill-btn" data-year="2">2.° Año</button>
+          <button class="pill-btn" data-year="3">3.° Año</button>
+          <button class="pill-btn" data-year="4">4.° Año</button>
+          <button class="pill-btn" data-year="5">5.° Año</button>
+        </div>
+
+        <div class="filter-row" id="classes-day-filter">
+          <button class="pill-btn active" data-day="todos">Todos los días</button>
+          <button class="pill-btn" data-day="Lunes">Lun</button>
+          <button class="pill-btn" data-day="Martes">Mar</button>
+          <button class="pill-btn" data-day="Miércoles">Mié</button>
+          <button class="pill-btn" data-day="Jueves">Jue</button>
+          <button class="pill-btn" data-day="Viernes">Vie</button>
+        </div>
+
+        <div id="classes-list" class="cards-list"></div>
+      </section>
+
+      <!-- VISTA: EXÁMENES (MESAS DE EXAMEN POR CARRERA) -->
+      <section id="view-exams" class="view-section">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">Mesas de Examen</h2>
+            <p class="view-subtitle">Agendá tus fechas por carrera</p>
+          </div>
+          <button id="btn-open-add-exam" class="btn btn-primary btn-sm">+ Agendar</button>
+        </div>
+
+        <select id="exams-career-select" class="select-dropdown">
+          <option value="pet">Profesorado en Educación Tecnológica</option>
+          <option value="tmaf">Técnico en Medios Audiovisuales y Fotografía</option>
+          <option value="tc">Tecnología Cerámica</option>
+          <option value="pap">Profesorado en Artes Plásticas</option>
+          <option value="lap">Licenciatura en Artes Plásticas</option>
+          <option value="dg">Diseño Gráfico</option>
+          <option value="di">Diseño Industrial</option>
+          <option value="aut">Arquitectura, Urbanismo y Territorio</option>
+        </select>
+
+        <div id="exams-list" class="cards-list"></div>
+      </section>
+
+      <!-- VISTA: PLANES DE ESTUDIO -->
+      <section id="view-plans" class="view-section">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">Planes y Correlativas</h2>
+            <p class="view-subtitle">Nombres reales sin códigos numéricos</p>
+          </div>
+        </div>
+
+        <select id="plans-career-select" class="select-dropdown">
+          <option value="pet">Profesorado en Educación Tecnológica</option>
+          <option value="tmaf">Técnico en Medios Audiovisuales y Fotografía</option>
+          <option value="tc">Tecnología Cerámica</option>
+          <option value="pap">Profesorado en Artes Plásticas</option>
+          <option value="lap">Licenciatura en Artes Plásticas</option>
+          <option value="dg">Diseño Gráfico</option>
+          <option value="di">Diseño Industrial</option>
+          <option value="aut">Arquitectura, Urbanismo y Territorio</option>
+        </select>
+
+        <div class="filter-row" id="plans-year-filter">
+          <button class="pill-btn active" data-pyear="todos">Todos los años</button>
+          <button class="pill-btn" data-pyear="1">1.° Año</button>
+          <button class="pill-btn" data-pyear="2">2.° Año</button>
+          <button class="pill-btn" data-pyear="3">3.° Año</button>
+          <button class="pill-btn" data-pyear="4">4.° Año</button>
+          <button class="pill-btn" data-pyear="5">5.° Año</button>
+        </div>
+
+        <div id="plans-list" class="cards-list"></div>
+      </section>
+
+      <!-- VISTA: PLANO DE LA FACULTAD -->
+      <section id="view-map" class="view-section">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">Plano de la FAyD</h2>
+            <p class="view-subtitle">Esquema arquitectónico interactivo</p>
+          </div>
+        </div>
+
+        <div class="filter-row" id="floor-filter">
+          <button class="pill-btn active" data-floor="pb">Planta Baja (Nivel Terreno)</button>
+          <button class="pill-btn" data-floor="pa">Primer Piso (Planta Alta)</button>
+        </div>
+
+        <div class="svg-map-wrapper">
+          <!-- PLANTA BAJA -->
+          <svg id="svg-floor-pb" viewBox="0 0 540 660" xmlns="http://www.w3.org/2000/svg">
+            <rect width="540" height="660" fill="var(--bg-card)" rx="14"/>
+            <text x="20" y="24" class="street-tag">ACCESO PASAJE LAMBRUSCHINI ➔</text>
+            <text x="20" y="470" class="street-tag">ACCESO CALLE RAUCH ➔</text>
+            <text x="445" y="360" class="street-tag" transform="rotate(90, 520, 360)">CALLE TINOGASTA ➔</text>
+
+            <rect x="150" y="30" width="145" height="390" fill="none" stroke="var(--border-color)" stroke-width="2" stroke-dasharray="4,4" rx="6"/>
+            <text x="222" y="435" fill="var(--text-muted)" font-size="10" font-weight="700" text-anchor="middle">EDIFICIO MÓDULO 1</text>
+
+            <g class="map-room" data-name="Planta Procesadora de Arcillas">
+              <rect x="20" y="38" width="125" height="42" rx="4"/>
+              <text x="82" y="62" text-anchor="middle">Proc. Arcillas</text>
+            </g>
+            <g class="map-room" data-name="Taller de Cerámica">
+              <rect x="155" y="38" width="70" height="68" rx="4"/>
+              <text x="190" y="75" text-anchor="middle">Taller Cerámica</text>
+            </g>
+            <g class="map-room" data-name="Nave Central / Hornos">
+              <rect x="230" y="38" width="60" height="68" rx="4"/>
+              <text x="260" y="75" text-anchor="middle">Hornos</text>
+            </g>
+            <g class="map-room" data-name="Taller de Cerámica (Frente)">
+              <rect x="155" y="112" width="70" height="110" rx="4"/>
+              <text x="190" y="170" text-anchor="middle">Taller Cerámica</text>
+            </g>
+            <g class="map-room" data-name="Laboratorio de Informática">
+              <rect x="230" y="112" width="60" height="110" rx="4"/>
+              <text x="260" y="170" text-anchor="middle">Lab. Informática</text>
+            </g>
+            <g class="map-room" data-name="Dirección de Estudios (Alumnado)">
+              <rect x="155" y="228" width="68" height="52" rx="4"/>
+              <text x="189" y="258" text-anchor="middle">Alumnado</text>
+            </g>
+            <g class="map-room" data-name="Secretaría Académica">
+              <rect x="155" y="286" width="68" height="58" rx="4"/>
+              <text x="189" y="318" text-anchor="middle">Sec. Académica</text>
+            </g>
+            <g class="map-room" data-name="Decanato">
+              <rect x="230" y="286" width="60" height="58" rx="4"/>
+              <text x="260" y="318" text-anchor="middle">Decanato</text>
+            </g>
+
+            <rect x="305" y="30" width="205" height="320" fill="none" stroke="var(--border-color)" stroke-width="2" stroke-dasharray="4,4" rx="6"/>
+            <text x="407" y="365" fill="var(--text-muted)" font-size="10" font-weight="700" text-anchor="middle">EDIFICIO MÓDULO 2</text>
+
+            <g class="map-room" data-name="Aula 5">
+              <rect x="312" y="38" width="56" height="58" rx="4"/>
+              <text x="340" y="70" text-anchor="middle">Aula 5</text>
+            </g>
+            <g class="map-room" data-name="Aula 6">
+              <rect x="436" y="38" width="68" height="96" rx="4"/>
+              <text x="470" y="90" text-anchor="middle">Aula 6</text>
+            </g>
+            <g class="map-room" data-name="Sanitarios Damas y Caballeros">
+              <rect x="312" y="140" width="46" height="68" rx="4"/>
+              <text x="335" y="178" text-anchor="middle">Baños</text>
+            </g>
+            <g class="map-room" data-name="Aula 4b">
+              <rect x="404" y="140" width="70" height="68" rx="4"/>
+              <text x="439" y="178" text-anchor="middle">Aula 4b</text>
+            </g>
+            <g class="map-room" data-name="Aula 4">
+              <rect x="364" y="214" width="110" height="88" rx="4"/>
+              <text x="419" y="262" text-anchor="middle">Aula 4</text>
+            </g>
+
+            <g class="map-room" data-name="Anfiteatro">
+              <path d="M 30 260 A 60 60 0 0 1 125 260 L 125 330 L 30 330 Z"/>
+              <text x="77" y="295" text-anchor="middle">Anfiteatro</text>
+            </g>
+            <g class="map-room" data-name="S.U.M. (Salón de Usos Múltiples)">
+              <rect x="25" y="490" width="85" height="65" rx="6"/>
+              <text x="67" y="528" text-anchor="middle">S.U.M.</text>
+            </g>
+            <g class="map-room" data-name="Centro de Estudiantes (C.E.F.A.D.)">
+              <rect x="120" y="505" width="75" height="50" rx="6"/>
+              <text x="157" y="534" text-anchor="middle">C.E.F.A.D.</text>
+            </g>
+            <g class="map-room" data-name="Museo de la FAyD">
+              <rect x="330" y="475" width="120" height="55" rx="6"/>
+              <text x="390" y="508" text-anchor="middle">Museo</text>
+            </g>
+            <g class="map-room" data-name="Playón Deportivo">
+              <rect x="240" y="545" width="220" height="75" rx="6"/>
+              <text x="350" y="588" text-anchor="middle">Playón</text>
+            </g>
+          </svg>
+
+          <!-- PLANTA ALTA -->
+          <svg id="svg-floor-pa" viewBox="0 0 540 600" xmlns="http://www.w3.org/2000/svg" style="display:none;">
+            <rect width="540" height="600" fill="var(--bg-card)" rx="14"/>
+            <text x="222" y="520" fill="var(--text-muted)" font-size="10" font-weight="700" text-anchor="middle">MÓDULO 1 (PLANTA ALTA)</text>
+            <text x="417" y="415" fill="var(--text-muted)" font-size="10" font-weight="700" text-anchor="middle">MÓDULO 2 (PLANTA ALTA)</text>
+
+            <g class="map-room" data-name="Estudio de Fotografía">
+              <rect x="150" y="42" width="72" height="90" rx="4"/>
+              <text x="186" y="90" text-anchor="middle">Fotografía</text>
+            </g>
+            <g class="map-room" data-name="Estudio de Televisión">
+              <rect x="228" y="42" width="70" height="90" rx="4"/>
+              <text x="263" y="90" text-anchor="middle">Televisión</text>
+            </g>
+            <g class="map-room" data-name="Sala de Consejo Directivo">
+              <rect x="228" y="140" width="70" height="110" rx="4"/>
+              <text x="263" y="198" text-anchor="middle">Consejo Dir.</text>
+            </g>
+            <g class="map-room" data-name="Taller de Grabado">
+              <rect x="150" y="215" width="72" height="95" rx="4"/>
+              <text x="186" y="265" text-anchor="middle">Grabado</text>
+            </g>
+            <g class="map-room" data-name="Aula 1">
+              <rect x="150" y="370" width="70" height="95" rx="4"/>
+              <text x="185" y="420" text-anchor="middle">Aula 1</text>
+            </g>
+            <g class="map-room" data-name="Aula 2">
+              <rect x="228" y="370" width="70" height="95" rx="4"/>
+              <text x="263" y="420" text-anchor="middle">Aula 2</text>
+            </g>
+            <g class="map-room" data-name="Aula 8">
+              <rect x="328" y="25" width="75" height="75" rx="4"/>
+              <text x="365" y="66" text-anchor="middle">Aula 8</text>
+            </g>
+            <g class="map-room" data-name="Aula 9">
+              <rect x="430" y="25" width="75" height="75" rx="4"/>
+              <text x="467" y="66" text-anchor="middle">Aula 9</text>
+            </g>
+            <g class="map-room" data-name="Aula 7">
+              <rect x="395" y="110" width="85" height="60" rx="4"/>
+              <text x="437" y="145" text-anchor="middle">Aula 7</text>
+            </g>
+            <g class="map-room" data-name="Auditorio Principal">
+              <rect x="395" y="176" width="85" height="75" rx="4"/>
+              <text x="437" y="218" text-anchor="middle">Auditorio</text>
+            </g>
+          </svg>
+        </div>
+
+        <div id="map-selection-card" class="map-selection-card hidden">
+          <strong id="map-selection-title">Espacio</strong>
+          <p style="font-size:12px; color:var(--text-secondary); margin-top:2px;">Ubicación verificada en el plano oficial de la FAyD.</p>
+        </div>
+      </section>
+
+      <!-- VISTA: TRÁMITES -->
+      <section id="view-tramites" class="view-section">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">Trámites FAyD</h2>
+            <p class="view-subtitle">Guía de gestión universitaria</p>
+          </div>
+        </div>
+
+        <div class="cards-list">
+          <div class="item-card">
+            <div>
+              <div class="card-title">📄 Certificado de Alumno Regular</div>
+              <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">
+                Se descarga digitalmente con QR de validación en <strong>SIU-Guaraní</strong>. Si requerís firma física, solicitalo en <strong>Dirección de Estudios (Alumnado)</strong> en Planta Baja del Módulo 1.
+              </p>
+            </div>
+          </div>
+          <div class="item-card">
+            <div>
+              <div class="card-title">📝 Inscripción a Mesas de Examen</div>
+              <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">
+                Exclusivamente vía SIU-Guaraní hasta 48 horas hábiles antes de la mesa evaluadora.
+              </p>
+            </div>
+          </div>
+          <div class="item-card">
+            <div>
+              <div class="card-title">🍲 Comedor Universitario y Albergue</div>
+              <p style="font-size:12px; color:var(--text-secondary); line-height:1.4;">
+                Gestionado por la Secretaría de Asuntos Estudiantiles (SAE) en el Pabellón Sur, junto al Playón Deportivo.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VISTA: CONFIGURACIÓN -->
+      <section id="view-more" class="view-section">
+        <div class="view-header">
+          <div>
+            <h2 class="view-title">Ajustes y Cuenta</h2>
+            <p class="view-subtitle">Configuración del estudiante</p>
+          </div>
+        </div>
+
+        <div class="item-card" style="margin-bottom:12px; flex-direction:column; align-items:stretch;">
+          <strong id="profile-email-text">Modo: Consulta General</strong>
+          <p id="profile-details-text" style="font-size:12px; color:var(--text-secondary); margin-top:4px;">
+            Sin personalización de correo.
+          </p>
+          <button id="btn-change-mode" class="btn btn-outline" style="margin-top:10px; padding:8px 12px; font-size:12px;">
+            Cambiar Cuenta / Identificarme
+          </button>
+        </div>
+
+        <div class="item-card" style="justify-content:space-between; align-items:center;">
+          <div>
+            <strong style="font-size:14px;">Modo Oscuro</strong>
+            <p style="font-size:11px; color:var(--text-muted);">Comodidad de lectura en baja luz</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="darkmode-toggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- NAVEGACIÓN INFERIOR -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-nav="home">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-text">Inicio</span>
+      </button>
+      <button class="nav-item" data-nav="classes">
+        <span class="nav-icon">📚</span>
+        <span class="nav-text">Horarios</span>
+      </button>
+      <button class="nav-item" data-nav="exams">
+        <span class="nav-icon">📝</span>
+        <span class="nav-text">Exámenes</span>
+      </button>
+      <button class="nav-item" data-nav="plans">
+        <span class="nav-icon">📑</span>
+        <span class="nav-text">Planes</span>
+      </button>
+      <button class="nav-item" data-nav="map">
+        <span class="nav-icon">📍</span>
+        <span class="nav-text">Plano</span>
+      </button>
+      <button class="nav-item" data-nav="more">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-text">Cuenta</span>
+      </button>
+    </nav>
+
+    <!-- MODAL AGENDAR EXAMEN -->
+    <div id="modal-exam-overlay" class="sheet-overlay hidden">
+      <div class="bottom-sheet">
+        <div class="sheet-header">
+          <h3 class="sheet-title">Agendar Mesa de Examen</h3>
+          <button id="btn-close-exam-modal" class="close-btn">&times;</button>
+        </div>
+        <form id="form-add-exam">
+          <div class="form-group">
+            <label class="form-label">Carrera</label>
+            <select id="modal-exam-career" class="form-control" disabled></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Materia Oficial del Plan</label>
+            <select id="modal-exam-subject-select" class="form-control" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha de Mesa</label>
+            <input type="date" id="modal-exam-date" class="form-control" required>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div class="form-group">
+              <label class="form-label">Horario</label>
+              <input type="time" id="modal-exam-time" class="form-control" value="08:00" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Condición</label>
+              <select id="modal-exam-cond" class="form-control">
+                <option value="Regular">Regular</option>
+                <option value="Libre">Libre</option>
+                <option value="Promocional">Promocional</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Aula / Espacio asignado</label>
+            <input type="text" id="modal-exam-room" class="form-control" placeholder="ej. Aula 4 / Auditorio" required>
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin-top:8px;">Guardar Mesa de Examen</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // BASE DE DATOS COMPLETA DE HORARIOS Y PLANES (NOMBRES REALES)
+    const DATA_REPO = {
+      pet: {
+        name: "Profesorado en Educación Tecnológica",
+        classes: [
+          { year: 1, name: "Integración Cultural", day: "Lunes", startTime: "14:00", endTime: "16:00", room: "Aula 3", teacher: "Mgter. Romero / Mgter. Halberstadt" },
+          { year: 1, name: "Introducción a la Investigación", day: "Lunes", startTime: "16:00", endTime: "18:00", room: "Aula 3", teacher: "Mgter. Camors / Esp. Anger / Dra. Niezwida" },
+          { year: 1, name: "Tecnología I", day: "Lunes", startTime: "18:30", endTime: "20:30", room: "Aula 3", teacher: "Dra. Nancy Niezwida" },
+          { year: 1, name: "Problemática Educativa I", day: "Martes", startTime: "14:00", endTime: "17:00", room: "Aula 5", teacher: "Mgter. Aquino / Lic. Davidian / Lic. Batista" },
+          { year: 1, name: "Matemática General (Teoría)", day: "Martes", startTime: "17:00", endTime: "18:00", room: "Aula 5", teacher: "Esp. Sergio Sedoff" },
+          { year: 1, name: "Matemática General (Práctica)", day: "Martes", startTime: "18:30", endTime: "19:30", room: "Aula 5", teacher: "Esp. Sergio Sedoff / Prof. Barrios" },
+          { year: 1, name: "Matemática General (Práctica)", day: "Jueves", startTime: "14:00", endTime: "16:00", room: "Aula 1", teacher: "Esp. Sergio Sedoff / Prof. Barrios" },
+          { year: 1, name: "Introducción a la Filosofía", day: "Jueves", startTime: "16:00", endTime: "18:00", room: "Aula 3", teacher: "Mgter. García / Mgter. Darnet / Esp. Videla" },
+          { year: 1, name: "Técnicas Básicas y Artesanales", day: "Viernes", startTime: "10:00", endTime: "12:00", room: "Taller de Escultura (Edif. 3)", teacher: "Lic. Héctor Borges" },
+          { year: 1, name: "Tecnología Computacional", day: "Viernes", startTime: "14:00", endTime: "16:00", room: "Lab. Informática", teacher: "Prof. Norma Kononczuk" },
+          { year: 1, name: "Representación Gráfica", day: "Viernes", startTime: "16:00", endTime: "18:00", room: "Aula 5", teacher: "Lic. Damián Duarte" },
+          { year: 2, name: "Historia de la Producción y la Tecnología I", day: "Lunes", startTime: "08:00", endTime: "10:00", room: "Aula 1", teacher: "Mgter. Camors / Prof. Nuñez" },
+          { year: 2, name: "Investigación en Educación Tecnológica", day: "Lunes", startTime: "10:00", endTime: "12:00", room: "Aula 1", teacher: "Mgter. Camors / Esp. Proenza" },
+          { year: 2, name: "Estrategias Docentes I", day: "Lunes", startTime: "14:00", endTime: "16:00", room: "Aula 6", teacher: "Mgter. Ciabocco / Lic. Batista" },
+          { year: 2, name: "Filosofía de la Ciencia y la Técnica I", day: "Lunes", startTime: "16:00", endTime: "18:00", room: "Consejo Directivo", teacher: "Dra. Nancy Niezwida" },
+          { year: 2, name: "Problemática Educativa II", day: "Lunes", startTime: "18:30", endTime: "20:30", room: "Aula 6", teacher: "Mgter. Ciabocco / Lic. Davidian" },
+          { year: 2, name: "Inglés I / Alemán I", day: "Martes", startTime: "08:00", endTime: "10:00", room: "SUM / Aula 1", teacher: "Prof. Sniechowski / Marrodan / Tröndle" },
+          { year: 2, name: "Antropología", day: "Martes", startTime: "18:30", endTime: "20:30", room: "Aula 6", teacher: "Mgter. Carolina Detke" },
+          { year: 2, name: "Italiano I", day: "Miércoles", startTime: "08:00", endTime: "10:00", room: "SUM", teacher: "Arq. Alejandro Forni" },
+          { year: 2, name: "Diseño I", day: "Miércoles", startTime: "10:00", endTime: "12:00", room: "Lab. Informática", teacher: "D.I. Nazareno Viera" },
+          { year: 2, name: "Tecnología II", day: "Miércoles", startTime: "16:00", endTime: "18:00", room: "Taller de Extensión", teacher: "Prof. Marcos Ferro" },
+          { year: 2, name: "Física General", day: "Miércoles", startTime: "18:30", endTime: "20:30", room: "Aula 4", teacher: "Esp. Lucas Crotti" },
+          { year: 2, name: "Portugués I", day: "Viernes", startTime: "08:00", endTime: "10:00", room: "SUM", teacher: "Prof. Matías Arrúa" },
+          { year: 3, name: "Materia Condensada", day: "Martes", startTime: "08:00", endTime: "10:00", room: "Taller de Extensión", teacher: "Esp. Lucas Crotti" },
+          { year: 3, name: "Inglés II / Alemán II", day: "Martes", startTime: "10:00", endTime: "12:00", room: "SUM / Aula 1", teacher: "Prof. Sniechowski / Tröndle" },
+          { year: 3, name: "Filosofía de la Ciencia y la Técnica II", day: "Lunes", startTime: "14:00", endTime: "15:00", room: "Aula 1", teacher: "Dra. Nancy Niezwida" },
+          { year: 3, name: "Estrategias Docentes II", day: "Lunes", startTime: "15:00", endTime: "17:00", room: "Aula 1", teacher: "Mgter. Cristina Figueredo / Prof. Balbuena" },
+          { year: 3, name: "Historia de la Producción y la Tecnología II", day: "Lunes", startTime: "18:30", endTime: "20:30", room: "Aula 1", teacher: "Mgter. Camors / Prof. Nuñez" },
+          { year: 3, name: "Matemática Aplicada", day: "Jueves", startTime: "10:00", endTime: "12:00", room: "Aula 3", teacher: "Esp. Lucas Crotti" },
+          { year: 3, name: "Tecnología III", day: "Jueves", startTime: "14:00", endTime: "18:00", room: "Aula 1", teacher: "Prof. Adriana Bernardy" },
+          { year: 3, name: "Portugués II", day: "Viernes", startTime: "10:00", endTime: "12:00", room: "SUM", teacher: "Prof. Matías Arrúa" },
+          { year: 4, name: "Práctica Profesional Docente", day: "Martes", startTime: "14:00", endTime: "17:00", room: "Aula 2 / Consejo Directivo", teacher: "Mgter. Cristina Figueredo / Lic. Duarte" },
+          { year: 4, name: "Tecnología IV", day: "Miércoles", startTime: "14:00", endTime: "18:00", room: "Aula 1", teacher: "Prof. Roberto Caballero" }
+        ],
+        plan: [
+          { year: 1, name: "Tecnología I", reg: "Anual", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Representación Gráfica", reg: "Anual", cond: "L-R", cor: "Sin correlativas previas" },
+          { year: 1, name: "Tecnología Computacional", reg: "Anual", cond: "L-R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Seminarios-Talleres de Tecnología I", reg: "Anual", cond: "R", cor: "Sin correlativas previas" },
+          { year: 1, name: "Integración Cultural", reg: "Anual", cond: "L-R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Introducción a la Filosofía", reg: "Anual", cond: "L-R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Problemática Educativa I", reg: "Anual", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Introducción a la Investigación", reg: "Anual", cond: "L-R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Matemática General", reg: "Anual", cond: "L-R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Talleres Integradores I", reg: "Cuatrimestral", cond: "R", cor: "Tecnología I, Representación Gráfica, Problemática Educativa I, Introducción a la Investigación" },
+          { year: 2, name: "Tecnología II", reg: "Anual", cond: "R", cor: "Requiere: Tecnología I" },
+          { year: 2, name: "Diseño I", reg: "Anual", cond: "R-P", cor: "Requiere: Representación Gráfica" },
+          { year: 2, name: "Seminarios-Taller de Tecnología II", reg: "Anual", cond: "R", cor: "Requiere: Tecnología I, Seminarios-Talleres de Tecnología I" },
+          { year: 2, name: "Antropología", reg: "Anual", cond: "L-R-P", cor: "Requiere: Integración Cultural, Introducción a la Filosofía" },
+          { year: 2, name: "Filosofía de las Ciencias y las Técnicas I", reg: "Anual", cond: "L-R-P", cor: "Requiere: Integración Cultural, Introducción a la Filosofía" },
+          { year: 2, name: "Historia de la Producción y la Tecnología I", reg: "Anual", cond: "L-R-P", cor: "Requiere: Integración Cultural, Introducción a la Filosofía" },
+          { year: 2, name: "Problemática Educativa II", reg: "Anual", cond: "R-P", cor: "Requiere: Problemática Educativa I" },
+          { year: 2, name: "Estrategias Docentes I", reg: "Anual", cond: "R-P", cor: "Requiere: Problemática Educativa I" },
+          { year: 2, name: "Investigación en Educación Tecnológica", reg: "Anual", cond: "L-R-P", cor: "Requiere: Introducción a la Investigación, Problemática Educativa I" },
+          { year: 2, name: "Física General", reg: "Anual", cond: "L-R-P", cor: "Requiere: Introducción a la Investigación, Matemática General" },
+          { year: 2, name: "Talleres Integradores II", reg: "Cuatrimestral", cond: "R", cor: "Requiere: Talleres Integradores I, Tecnología II, Diseño I, Problemática Educativa II, Estrategias Docentes I" },
+          { year: 2, name: "Área Idiomas I (Inglés / Portugués / Alemán / Italiano)", reg: "Anual", cond: "L-R-P", cor: "Sin correlativas previas" },
+          { year: 3, name: "Tecnología III", reg: "Anual", cond: "R", cor: "Requiere: 1.° año completo y Tecnología II" },
+          { year: 3, name: "Seminarios-Talleres de Tecnología III", reg: "Anual", cond: "R", cor: "Requiere: 1.° año completo, Tecnología II y Seminarios-Taller II" },
+          { year: 3, name: "Filosofía de las Ciencias y las Técnicas II", reg: "Anual", cond: "L-R-P", cor: "Requiere: Antropología, Filosofía I, Historia I" },
+          { year: 3, name: "Historia de la Producción y la Tecnología II", reg: "Anual", cond: "L-R-P", cor: "Requiere: Historia I, Investigación en Ed. Tecnológica" },
+          { year: 3, name: "Estrategias Docentes II", reg: "Anual", cond: "R-P", cor: "Requiere: Problemática Educativa II, Estrategias Docentes I" },
+          { year: 3, name: "Matemática Aplicada", reg: "Anual", cond: "L-R-P", cor: "Requiere: Investigación en Ed. Tecnológica, Física General" },
+          { year: 3, name: "Materia Condensada", reg: "Anual", cond: "L-R-P", cor: "Requiere: Investigación en Ed. Tecnológica, Física General" },
+          { year: 3, name: "Talleres Integradores III", reg: "Cuatrimestral", cond: "R", cor: "Requiere: Talleres Integradores II aprobado, Tecnología III, Seminarios III e Idioma I" },
+          { year: 3, name: "Área Idiomas II", reg: "Anual", cond: "L-R-P", cor: "Requiere: Idiomas I" },
+          { year: 4, name: "Tecnología IV", reg: "Anual", cond: "R", cor: "Requiere: 1.° y 2.° completos y Tecnología III" },
+          { year: 4, name: "Seminarios-Taller de Tecnología IV", reg: "Anual", cond: "R", cor: "Requiere: Seminarios-Talleres de Tecnología III" },
+          { year: 4, name: "Práctica Profesional Docente (Residencia)", reg: "Anual", cond: "R", cor: "Requiere: 3.° año regularizado y Estrategias Docentes II aprobada" },
+          { year: 4, name: "Talleres Integradores IV", reg: "Cuatrimestral", cond: "R", cor: "Requiere: 4.° año regularizado, Talleres III e Idiomas I y II" }
+        ]
+      },
+      tmaf: {
+        name: "Técnico en Medios Audiovisuales y Fotografía",
+        classes: [
+          { year: 1, name: "Historia del Arte Moderno y Contemporáneo", day: "Lunes", startTime: "14:00", endTime: "16:00", room: "Aula 4", teacher: "Mgter. Glosnicki / Grün" },
+          { year: 1, name: "Cámara I", day: "Lunes", startTime: "16:00", endTime: "20:30", room: "Aula 4", teacher: "Mgter. Iturrieta / Téc. Ríos" },
+          { year: 1, name: "Iluminación I", day: "Martes", startTime: "14:00", endTime: "16:00", room: "Aula 4", teacher: "Mgter. Fernanda Iturrieta" },
+          { year: 1, name: "Laboratorio I", day: "Martes", startTime: "16:00", endTime: "20:30", room: "Aula 4 / Lab", teacher: "Mgter. Iturrieta / DG. Ciszlach" },
+          { year: 1, name: "Percepción Visual / Medios y Sociedad I", day: "Jueves", startTime: "16:00", endTime: "18:00", room: "Aula 4", teacher: "Esp. Pedrozo / Mgter. Morales" },
+          { year: 1, name: "La Narrativa en la Literatura", day: "Jueves", startTime: "18:30", endTime: "20:30", room: "Aula 4", teacher: "Mgter. Sergio Quintana" },
+          { year: 2, name: "Sociedad y Cultura", day: "Lunes", startTime: "18:30", endTime: "20:30", room: "Aula 9", teacher: "Mgter. Romero / Mgter. Batirola" },
+          { year: 2, name: "Técnicas Narrativas Audiovisuales I", day: "Martes", startTime: "14:00", endTime: "16:00", room: "Lab. Informática", teacher: "Dra. Lorena Duthil" },
+          { year: 2, name: "Iluminación II", day: "Martes", startTime: "16:00", endTime: "18:00", room: "Lab. Informática", teacher: "Dra. Lorena Duthil" },
+          { year: 2, name: "Cámara II", day: "Martes", startTime: "18:30", endTime: "21:30", room: "Aula 3", teacher: "Dra. Lorena Duthil" },
+          { year: 2, name: "Montaje y Edición I", day: "Miércoles", startTime: "16:00", endTime: "18:00", room: "Aula 5", teacher: "DIS. Gonzalo Barbieri" },
+          { year: 2, name: "Laboratorio II", day: "Jueves", startTime: "14:00", endTime: "17:00", room: "Aula 8", teacher: "DG. Leonardo López" },
+          { year: 2, name: "Medios y Sociedad II y III", day: "Jueves", startTime: "17:00", endTime: "19:30", room: "Aula 9", teacher: "Mgter. Alejandra Romero" },
+          { year: 3, name: "Tutoría Sonido", day: "Lunes", startTime: "14:00", endTime: "16:00", room: "Lab. Informática", teacher: "Lic. Miguel Nieves" },
+          { year: 3, name: "Cámara III", day: "Martes", startTime: "15:00", endTime: "18:00", room: "Aula 3", teacher: "Lic. Benjamín Correa" },
+          { year: 3, name: "Técnicas Narrativas Audiovisuales II", day: "Miércoles", startTime: "14:00", endTime: "16:00", room: "Lab. Informática", teacher: "Dra. Lorena Duthil" },
+          { year: 3, name: "Percepción Visual II", day: "Miércoles", startTime: "16:00", endTime: "18:00", room: "Aula 3", teacher: "Dra. Rosario Millán" },
+          { year: 3, name: "Planificación y Producción", day: "Jueves", startTime: "16:00", endTime: "18:00", room: "Aula 9", teacher: "Lic. Mariana Lombardini" },
+          { year: 3, name: "Montaje y Edición II", day: "Jueves", startTime: "18:30", endTime: "20:30", room: "Aula 3", teacher: "DIS. Gonzalo Barbieri" },
+          { year: 3, name: "Sonido", day: "Viernes", startTime: "17:00", endTime: "21:30", room: "Aula 8", teacher: "Lic. Miguel Nieves" }
+        ],
+        plan: [
+          { year: 1, name: "Historia del Arte (Moderno y Contemporáneo)", reg: "Anual", cond: "L-R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Percepción Visual", reg: "1.° Cuatrimestre", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Medios y Sociedad I (Fotografía)", reg: "2.° Cuatrimestre", cond: "L-R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "La Narrativa en la Literatura", reg: "Anual", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Laboratorio I", reg: "Anual", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Cámara I", reg: "Anual", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Iluminación I", reg: "Anual", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Taller de Producción Integral I", reg: "6 Semanas", cond: "R-P", cor: "Requiere materias de 1.° año completas" },
+          { year: 2, name: "Sociedad y Cultura", reg: "Anual", cond: "L-R-P", cor: "Requiere: Historia del Arte" },
+          { year: 2, name: "Medios y Sociedad II (El Cine)", reg: "1.° Cuatrimestre", cond: "L-R-P", cor: "Requiere: Medios y Sociedad I" },
+          { year: 2, name: "Medios y Sociedad III (T.V. y Video)", reg: "2.° Cuatrimestre", cond: "L-R-P", cor: "Requiere: Medios y Sociedad I y II" },
+          { year: 2, name: "Técnicas Narrativas Audiovisuales I", reg: "1.° Cuatrimestre", cond: "R-P", cor: "Requiere: La Narrativa en la Literatura" },
+          { year: 2, name: "Montaje - Edición I", reg: "Anual", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 2, name: "Laboratorio II", reg: "Anual", cond: "R-P", cor: "Requiere: Laboratorio I" },
+          { year: 2, name: "Cámara II", reg: "Anual", cond: "R-P", cor: "Requiere: Cámara I" },
+          { year: 2, name: "Iluminación II", reg: "Anual", cond: "R-P", cor: "Requiere: Iluminación I" },
+          { year: 3, name: "Percepción Visual II (Lo Comunicacional)", reg: "Anual", cond: "R-P", cor: "Requiere: Percepción Visual" },
+          { year: 3, name: "Técnicas Narrativas Audiovisuales II", reg: "1.° Cuatrimestre", cond: "R-P", cor: "Requiere: Técnicas Narrativas Audiovisuales I" },
+          { year: 3, name: "Montaje - Edición II", reg: "Anual", cond: "R-P", cor: "Requiere: Montaje - Edición I" },
+          { year: 3, name: "Producción y Planificación", reg: "Anual", cond: "R-P", cor: "Requiere: Talleres de Producción Integral I y II" },
+          { year: 3, name: "Cámara III", reg: "Anual", cond: "R-P", cor: "Requiere: Cámara I y II" },
+          { year: 3, name: "Sonido", reg: "Anual", cond: "R-P", cor: "Sin correlativas previas" }
+        ]
+      },
+      dg: {
+        name: "Diseño Gráfico",
+        classes: [
+          { year: 1, name: "Tipografía", day: "Lunes", startTime: "08:00", endTime: "12:00", room: "Aula 7", teacher: "DG. Gladys Bordin" },
+          { year: 1, name: "Taller de Diseño Gráfico I", day: "Martes", startTime: "08:30", endTime: "12:00", room: "Aula 7", teacher: "Mgter. Angelina Denti" },
+          { year: 1, name: "Computación I", day: "Martes", startTime: "16:00", endTime: "18:00", room: "Lab. Informática", teacher: "Ing. Piatti / DG. Spinozzi" },
+          { year: 1, name: "Redacción", day: "Miércoles", startTime: "10:00", endTime: "12:00", room: "Aula 7", teacher: "DG. Raquel López" },
+          { year: 1, name: "Visión", day: "Miércoles", startTime: "14:00", endTime: "18:00", room: "Aula 4/5", teacher: "DG. Daniela Pasquet" },
+          { year: 1, name: "Dibujo y Representación I", day: "Jueves", startTime: "08:00", endTime: "12:00", room: "Aula 7", teacher: "Mgter. Iturralde / DG. Goya" },
+          { year: 1, name: "Psicología", day: "Viernes", startTime: "08:00", endTime: "10:00", room: "Aula 7", teacher: "DG. Franco / Lic. Davidian" },
+          { year: 2, name: "Taller de Diseño Gráfico II", day: "Lunes", startTime: "08:00", endTime: "12:00", room: "Aula 4", teacher: "DG. Mariel López" },
+          { year: 2, name: "Tecnología I", day: "Martes", startTime: "10:00", endTime: "12:00", room: "Aula 4", teacher: "DG. Spinozzi" },
+          { year: 3, name: "Fotografía", day: "Lunes", startTime: "08:00", endTime: "10:00", room: "Aula 8", teacher: "Mgter. Iturrieta" },
+          { year: 3, name: "Taller de Diseño Gráfico III", day: "Jueves", startTime: "08:00", endTime: "12:00", room: "Aula 4", teacher: "DG. Pasquet" },
+          { year: 4, name: "Taller de Diseño Gráfico IV", day: "Martes", startTime: "08:00", endTime: "12:00", room: "Aula 5", teacher: "Mgter. Iturralde" }
+        ],
+        plan: [
+          { year: 1, name: "Taller de Diseño Gráfico I", reg: "Anual", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Dibujo y Representación I", reg: "Anual", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Computación I", reg: "Anual", cond: "L-R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Tipografía", reg: "Anual", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Visión", reg: "Anual", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Redacción", reg: "Anual", cond: "L-R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Psicología", reg: "Anual", cond: "L-R-P", cor: "Sin correlativas previas" },
+          { year: 2, name: "Taller de Diseño Gráfico II", reg: "Anual", cond: "R-P", cor: "Requiere: Taller de Diseño Gráfico I" },
+          { year: 2, name: "Dibujo y Representación II", reg: "Anual", cond: "R-P", cor: "Requiere: Dibujo y Representación I" },
+          { year: 2, name: "Computación II", reg: "Anual", cond: "L-R-P", cor: "Requiere: Computación I" },
+          { year: 2, name: "Historia del Arte y del Diseño I", reg: "Anual", cond: "L-R-P", cor: "Sin correlativas previas" },
+          { year: 2, name: "Tecnología I", reg: "Cuatrimestral", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 2, name: "Semiología de la Imagen", reg: "Anual", cond: "L-R-P", cor: "Requiere: Visión, Psicología" },
+          { year: 2, name: "Teoría del Conocimiento", reg: "Anual", cond: "L-R-P", cor: "Requiere: Psicología" },
+          { year: 3, name: "Taller de Diseño Gráfico III", reg: "Anual", cond: "R-P", cor: "Requiere: TDG I aprobado y TDG II regularizado" },
+          { year: 3, name: "Tecnología II", reg: "Anual", cond: "R-P", cor: "Requiere: Tecnología I" },
+          { year: 3, name: "Fotografía", reg: "Anual", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 3, name: "Teoría de la Comunicación", reg: "Anual", cond: "L-R-P", cor: "Requiere: Semiología, Teoría del Conocimiento, Visión, Psicología" },
+          { year: 4, name: "Taller de Diseño Gráfico IV", reg: "Anual", cond: "R", cor: "Requiere: 1.° y 2.° año aprobados completos y 3.° regularizado" }
+        ]
+      },
+      aut: {
+        name: "Arquitectura, Urbanismo y Territorio",
+        classes: [
+          { year: 1, name: "Antropología", day: "Lunes", startTime: "16:00", endTime: "18:00", room: "Aula 7", teacher: "Mgter. Vanessa Vargas" },
+          { year: 1, name: "Matemática", day: "Lunes", startTime: "18:30", endTime: "20:30", room: "Aula 7", teacher: "Esp. Sergio Sedoff" },
+          { year: 1, name: "Proyecto Arquitectónico y Urbano I", day: "Martes", startTime: "16:00", endTime: "20:30", room: "Aula 7", teacher: "Arq. Silvia Okulovich" },
+          { year: 1, name: "Morfología y Comunicación I", day: "Miércoles", startTime: "14:00", endTime: "18:00", room: "Aula 7", teacher: "DI. Hernán Fretto" },
+          { year: 1, name: "Introducción a Materiales y Sistemas Constructivos", day: "Miércoles", startTime: "18:30", endTime: "21:30", room: "Aula 7", teacher: "Ing. Marcelo Klimzuk" },
+          { year: 1, name: "Sistemas de Representación I", day: "Viernes", startTime: "13:00", endTime: "18:00", room: "Aula 7", teacher: "Arq. Gentile / Arq. Forni" },
+          { year: 2, name: "Proyecto Arquitectónico y Urbano III", day: "Martes", startTime: "16:00", endTime: "20:30", room: "Aula 8", teacher: "Arq. Taborda" },
+          { year: 3, name: "Proyecto Arquitectónico y Urbano V", day: "Martes", startTime: "16:00", endTime: "20:30", room: "Aula 6", teacher: "Arq. Cieplinski" },
+          { year: 4, name: "Proyecto Arquitectónico y Urbano VII", day: "Martes", startTime: "17:00", endTime: "21:00", room: "Aula 10", teacher: "Arq. Weber" }
+        ],
+        plan: [
+          { year: 1, name: "Introducción a la Arquitectura y el Urbanismo", reg: "Módulo Introductorio", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Introducción a la Matemática", reg: "Módulo Introductorio", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Introducción a la Física y la Química", reg: "Módulo Introductorio", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Morfología y Comunicación I", reg: "1.° Cuatrimestre", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Sistemas de Representación I", reg: "1.° Cuatrimestre", cond: "R", cor: "Sin correlativas previas" },
+          { year: 1, name: "Proyecto Arquitectónico y Urbano I", reg: "1.° Cuatrimestre", cond: "R-P", cor: "Requiere: Introducción a la Arquitectura y el Urbanismo" },
+          { year: 1, name: "Introducción a los Materiales, Tecnología y Sistemas Constructivos", reg: "1.° Cuatrimestre", cond: "R", cor: "Requiere: Introducción a la Arq., Intro. Matemática e Intro. Física-Química" },
+          { year: 2, name: "Proyecto Arquitectónico y Urbano III", reg: "1.° Cuatrimestre", cond: "R-P", cor: "Requiere: PAU II, Sistemas de Rep. I, Morfología I" },
+          { year: 3, name: "Proyecto Arquitectónico y Urbano V", reg: "1.° Cuatrimestre", cond: "R-P", cor: "Requiere: PAU IV, Morfología III, Cálculo II" },
+          { year: 4, name: "Proyecto Arquitectónico y Urbano VII", reg: "1.° Cuatrimestre", cond: "R-P", cor: "Requiere: Sustentabilidad, Cálculo IV, Historia III, PAU VI" },
+          { year: 5, name: "Proyecto Arquitectónico, Urbano y Territorial Integral (Trabajo Final)", reg: "Anual", cond: "R-P", cor: "Requiere 1.° a 4.° año completos" }
+        ]
+      },
+      tc: {
+        name: "Tecnología Cerámica",
+        classes: [
+          { year: 1, name: "Historia del Arte I", day: "Lunes", startTime: "10:00", endTime: "12:00", room: "Aula 9", teacher: "Mgter. Zulma Glosnicki" },
+          { year: 1, name: "Taller I (Alfarería)", day: "Martes", startTime: "14:00", endTime: "18:00", room: "Taller de Cerámica", teacher: "Prof. Nancy Vazquez" },
+          { year: 1, name: "Dibujo Técnico", day: "Miércoles", startTime: "08:00", endTime: "10:00", room: "Aula 3", teacher: "Mgter. Claudia San Martin" },
+          { year: 1, name: "Investigación de Materiales I", day: "Jueves", startTime: "18:30", endTime: "21:30", room: "Taller de Cerámica", teacher: "Lic. Rafaela Hillebrand" },
+          { year: 2, name: "Taller II (Alfarería)", day: "Miércoles", startTime: "17:00", endTime: "20:30", room: "Taller de Cerámica", teacher: "Prof. Rubén Gastaldo" },
+          { year: 3, name: "Proyecto de Producción", day: "Lunes", startTime: "14:00", endTime: "16:00", room: "Aula 2", teacher: "Lic. Inés Rosa" }
+        ],
+        plan: [
+          { year: 1, name: "Taller I (Modelado - Alfarería - Moldería)", reg: "Anual", cond: "R", cor: "Sin correlativas previas" },
+          { year: 1, name: "Diseño y Decoración I", reg: "Anual", cond: "R", cor: "Sin correlativas previas" },
+          { year: 1, name: "Investigación de Materiales I", reg: "Anual", cond: "R", cor: "Sin correlativas previas" },
+          { year: 2, name: "Taller II (Modelado - Alfarería - Moldería)", reg: "Anual", cond: "R", cor: "Requiere: Taller I" },
+          { year: 3, name: "Proyecto de Producción", reg: "2.° Cuatrimestre", cond: "R", cor: "Requiere: Taller II, Diseño II, Materiales II" }
+        ]
+      },
+      pap: {
+        name: "Profesorado en Artes Plásticas",
+        classes: [
+          { year: 1, name: "Historia del Arte I", day: "Lunes", startTime: "10:00", endTime: "12:00", room: "Aula 9", teacher: "Mgter. Zulma Glosnicki" },
+          { year: 1, name: "Dibujo I", day: "Lunes", startTime: "18:30", endTime: "20:30", room: "Taller de Dibujo (Edif. 3)", teacher: "Mgter. Mariela Montero" },
+          { year: 1, name: "Grabado I", day: "Martes", startTime: "09:00", endTime: "11:00", room: "Taller de Grabado", teacher: "Mgter. Laura Hedman" },
+          { year: 1, name: "Pintura I", day: "Miércoles", startTime: "18:30", endTime: "21:30", room: "Taller Pintura (Edif. 3)", teacher: "Esp. Ivana Scherer" },
+          { year: 2, name: "Historia del Arte II", day: "Lunes", startTime: "08:00", endTime: "10:00", room: "Aula 9", teacher: "Mgter. Zulma Glosnicki" },
+          { year: 3, name: "Historia del Arte III", day: "Lunes", startTime: "10:00", endTime: "12:00", room: "SUM", teacher: "Mgter. Marisol Batirola" },
+          { year: 4, name: "Historia del Arte IV", day: "Lunes", startTime: "08:00", endTime: "10:00", room: "SUM", teacher: "Mgter. Marisol Batirola" }
+        ],
+        plan: [
+          { year: 1, name: "Visión I", reg: "1.° Cuatrimestre", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Morfología I", reg: "1.° Cuatrimestre", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Geometría I", reg: "1.° Cuatrimestre", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Dibujo I", reg: "Anual", cond: "R-P", cor: "Requiere: Visión I, Morfología I, Geometría I" },
+          { year: 2, name: "Dibujo II", reg: "Anual", cond: "R-P", cor: "Requiere: Dibujo I" },
+          { year: 3, name: "Dibujo III", reg: "Anual", cond: "R-P", cor: "Requiere: Dibujo II" },
+          { year: 4, name: "Dibujo IV", reg: "Anual", cond: "R-P", cor: "Requiere: Dibujo III" }
+        ]
+      },
+      lap: {
+        name: "Licenciatura en Artes Plásticas",
+        classes: [
+          { year: 1, name: "Historia del Arte I", day: "Lunes", startTime: "10:00", endTime: "12:00", room: "Aula 9", teacher: "Mgter. Zulma Glosnicki" },
+          { year: 1, name: "Dibujo I", day: "Lunes", startTime: "18:30", endTime: "20:30", room: "Taller de Dibujo (Edif. 3)", teacher: "Mgter. Mariela Montero" },
+          { year: 1, name: "Pintura I", day: "Miércoles", startTime: "18:30", endTime: "21:30", room: "Taller Pintura (Edif. 3)", teacher: "Esp. Ivana Scherer" },
+          { year: 5, name: "Planeamiento y Gestión Cultural", day: "Martes", startTime: "13:00", endTime: "15:00", room: "Aula 1", teacher: "Mgter. M. Blanca Iturralde" }
+        ],
+        plan: [
+          { year: 1, name: "Visión I", reg: "1.° Cuatrimestre", cond: "R-P", cor: "Sin correlativas previas" },
+          { year: 1, name: "Dibujo I", reg: "Anual", cond: "R-P", cor: "Requiere: Visión I, Morfología I, Geometría I" },
+          { year: 2, name: "Dibujo II", reg: "Anual", cond: "R-P", cor: "Requiere: Dibujo I" },
+          { year: 3, name: "Investigación en Arte II", reg: "Anual", cond: "L-R-P", cor: "Requiere: Investigación en Arte I" },
+          { year: 4, name: "Epistemología", reg: "Anual", cond: "L-R-P", cor: "Requiere: Investigación en Arte II" },
+          { year: 5, name: "Tesis (Taller)", reg: "Anual", cond: "R", cor: "Requiere materias anteriores aprobadas" }
+        ]
+      },
+      di: {
+        name: "Diseño Industrial",
+        classes: [
+          { year: 1, name: "Psicofisiología de la Percepción", day: "Martes", startTime: "08:00", endTime: "10:00", room: "Sede del Centro", teacher: "Mgter. Cecilia" },
+          { year: 1, name: "Taller de Diseño I", day: "Martes", startTime: "10:00", endTime: "18:00", room: "Sede del Centro", teacher: "DI. Javier Vera" },
+          { year: 2, name: "Taller de Diseño II", day: "Martes", startTime: "09:00", endTime: "16:00", room: "Aula 9", teacher: "DI. Laura Díaz" },
+          { year: 3, name: "Taller de Diseño III", day: "Martes", startTime: "10:00", endTime: "16:00", room: "Aula 6", teacher: "DI. Mara Trümpler" },
+          { year: 4, name: "Taller de Diseño IV", day: "Martes", startTime: "08:00", endTime: "18:00", room: "Aula 6", teacher: "DI. Javier Balcaza" },
+          { year: 5, name: "Taller de Diseño V", day: "Viernes", startTime: "15:00", endTime: "21:00", room: "Sede del Centro", teacher: "DI. Javier Vera" }
+        ],
+        plan: [
+          { year: 1, name: "Módulo Introductorio", reg: "Módulo Inicial", cond: "R", cor: "Sin correlativas previas" },
+          { year: 1, name: "Taller de Diseño I", reg: "Anual", cond: "R-P", cor: "Requiere: Módulo Introductorio aprobado" },
+          { year: 2, name: "Taller de Diseño II", reg: "Anual", cond: "R-P", cor: "Requiere: Taller de Diseño I, Morfología I, Sistemas I" },
+          { year: 3, name: "Taller de Diseño III", reg: "Anual", cond: "R-P", cor: "Requiere: 1.° año completo, Taller de Diseño II" },
+          { year: 4, name: "Taller de Diseño IV", reg: "Anual", cond: "R-P", cor: "Requiere: 1.° y 2.° aprobados, Taller de Diseño III" },
+          { year: 5, name: "Taller de Diseño V (Proyecto Final)", reg: "Anual", cond: "R-P", cor: "Requiere: Taller de Diseño IV aprobado" }
+        ]
+      }
+    };
+
+    // CONTROL DE SESIÓN
+    const AuthSession = {
+      isIdentified: false,
+      userEmail: null,
+      career: 'pet',
+      year: 1,
+
+      init() {
+        const savedEmail = localStorage.getItem('mifayd_active_user');
+        if (savedEmail) {
+          const profile = JSON.parse(localStorage.getItem(`mifayd_user_${savedEmail}`) || '{}');
+          this.login(savedEmail, profile.career || 'pet', profile.year || 1);
+        } else {
+          document.getElementById('auth-screen').classList.remove('hidden');
+        }
+      },
+
+      login(email, career, year) {
+        this.isIdentified = true;
+        this.userEmail = email;
+        this.career = career;
+        this.year = parseInt(year);
+
+        localStorage.setItem('mifayd_active_user', email);
+        localStorage.setItem(`mifayd_user_${email}`, JSON.stringify({ career, year }));
+
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('user-display-label').textContent = email.split('@')[0];
+        document.getElementById('avatar-icon').textContent = email.charAt(0).toUpperCase();
+        document.getElementById('profile-email-text').textContent = `Cuenta: ${email}`;
+        document.getElementById('profile-details-text').textContent = `${DATA_REPO[career].name} • ${year}.° Año`;
+
+        document.getElementById('classes-career-select').value = career;
+        document.getElementById('plans-career-select').value = career;
+        document.getElementById('exams-career-select').value = career;
+
+        ClassesView.setYear(year);
+        HomeView.render();
+        ClassesView.render();
+        PlansView.render();
+        ExamsView.render();
+      },
+
+      enterAsGuest() {
+        this.isIdentified = false;
+        this.userEmail = null;
+        this.career = 'pet';
+        this.year = 1;
+
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('user-display-label').textContent = 'Consulta General';
+        document.getElementById('avatar-icon').textContent = '?';
+        document.getElementById('profile-email-text').textContent = 'Modo: Consulta General (Sin personalización)';
+        document.getElementById('profile-details-text').textContent = 'Acceso abierto a todas las carreras y planes oficiales.';
+
+        HomeView.render();
+        ClassesView.render();
+        PlansView.render();
+        ExamsView.render();
+      },
+
+      openAuthPrompt() {
+        document.getElementById('auth-screen').classList.remove('hidden');
+      }
+    };
+
+    // GESTIÓN DE EXÁMENES (MESAS)
+    const ExamsManager = {
+      getKey() {
+        return AuthSession.isIdentified ? `mifayd_exams_${AuthSession.userEmail}` : 'mifayd_exams_guest';
+      },
+      getAll() {
+        return JSON.parse(localStorage.getItem(this.getKey()) || '[]');
+      },
+      save(exam) {
+        const list = this.getAll();
+        list.push(exam);
+        localStorage.setItem(this.getKey(), JSON.stringify(list));
+      },
+      delete(id) {
+        let list = this.getAll();
+        list = list.filter(e => e.id !== id);
+        localStorage.setItem(this.getKey(), JSON.stringify(list));
+      }
+    };
+
+    const ExamsView = {
+      init() {
+        document.getElementById('exams-career-select').addEventListener('change', () => this.render());
+        document.getElementById('btn-open-add-exam').addEventListener('click', () => this.openAddModal());
+        document.getElementById('btn-close-exam-modal').addEventListener('click', () => this.closeAddModal());
+
+        document.getElementById('form-add-exam').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const careerKey = document.getElementById('exams-career-select').value;
+          const subject = document.getElementById('modal-exam-subject-select').value;
+          const date = document.getElementById('modal-exam-date').value;
+          const time = document.getElementById('modal-exam-time').value;
+          const cond = document.getElementById('modal-exam-cond').value;
+          const room = document.getElementById('modal-exam-room').value.trim();
+
+          const newExam = {
+            id: 'exam_' + Date.now(),
+            careerKey,
+            subject,
+            date,
+            time,
+            cond,
+            room
+          };
+
+          ExamsManager.save(newExam);
+          this.closeAddModal();
+          this.render();
+          HomeView.render();
+        });
+      },
+
+      openAddModal() {
+        const careerKey = document.getElementById('exams-career-select').value;
+        const career = DATA_REPO[careerKey];
+
+        const careerModalSelect = document.getElementById('modal-exam-career');
+        careerModalSelect.innerHTML = `<option value="${careerKey}">${career.name}</option>`;
+
+        // Llenar select con las materias oficiales del plan de la carrera
+        const subjectSelect = document.getElementById('modal-exam-subject-select');
+        subjectSelect.innerHTML = '';
+        career.plan.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m.name;
+          opt.textContent = `${m.year}.° Año — ${m.name}`;
+          subjectSelect.appendChild(opt);
+        });
+
+        // Sugerir fecha a partir de hoy
+        document.getElementById('modal-exam-date').value = '2026-10-15';
+        document.getElementById('modal-exam-overlay').classList.remove('hidden');
+      },
+
+      closeAddModal() {
+        document.getElementById('modal-exam-overlay').classList.add('hidden');
+      },
+
+      daysRemaining(dateStr) {
+        const today = new Date(2026, 9, 7); // 7 de octubre de 2026
+        const parts = dateStr.split('-');
+        const target = new Date(parts[0], parts[1] - 1, parts[2]);
+        const diff = target - today;
+        return Math.ceil(diff / (1000 * 60 * 60 * 24));
+      },
+
+      render() {
+        const careerKey = document.getElementById('exams-career-select').value;
+        const listEl = document.getElementById('exams-list');
+        listEl.innerHTML = '';
+
+        const allExams = ExamsManager.getAll();
+        const filtered = allExams.filter(e => e.careerKey === careerKey);
+
+        if (filtered.length === 0) {
+          listEl.innerHTML = `
+            <div style="text-align:center; padding:30px 10px; color:var(--text-muted);">
+              <span style="font-size:32px; display:block; margin-bottom:8px;">📝</span>
+              <p>No tenés mesas de examen agendadas para esta carrera.</p>
+              <button class="btn btn-outline btn-sm" style="margin-top:10px;" onclick="document.getElementById('btn-open-add-exam').click()">
+                + Agendar mi primera mesa
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        // Ordenar por fecha
+        filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        filtered.forEach(e => {
+          const days = this.daysRemaining(e.date);
+          const card = document.createElement('div');
+          card.className = 'item-card';
+          card.innerHTML = `
+            <div style="flex:1;">
+              <div class="card-title">${e.subject}</div>
+              <div class="card-meta">
+                <span class="card-meta-pill">📅 ${e.date}</span>
+                <span class="card-meta-pill">🕐 ${e.time} hs</span>
+                <span class="card-meta-pill">📍 ${e.room}</span>
+                <span class="card-meta-pill">Condición: ${e.cond}</span>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px;">
+              <div class="badge-countdown">
+                ${days > 0 ? `Faltan<br><strong>${days} días</strong>` : (days === 0 ? '¡Rinde hoy!' : 'Finalizado')}
+              </div>
+              <button class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--border-color); padding:4px 8px;" data-del="${e.id}">
+                Eliminar
+              </button>
+            </div>
+          `;
+
+          card.querySelector('[data-del]').addEventListener('click', () => {
+            if (confirm(`¿Eliminar la mesa de ${e.subject}?`)) {
+              ExamsManager.delete(e.id);
+              this.render();
+              HomeView.render();
+            }
+          });
+
+          listEl.appendChild(card);
+        });
+      }
+    };
+
+    const Navigation = {
+      init() {
+        document.querySelectorAll('.nav-item').forEach(btn => {
+          btn.addEventListener('click', () => this.navigateTo(btn.dataset.nav));
+        });
+
+        document.querySelectorAll('[data-action]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const action = btn.dataset.action;
+            if (action === 'nav-classes') this.navigateTo('classes');
+            if (action === 'nav-exams') this.navigateTo('exams');
+            if (action === 'nav-plans') this.navigateTo('plans');
+            if (action === 'nav-map') this.navigateTo('map');
+          });
+        });
+
+        document.getElementById('user-status').addEventListener('click', () => this.navigateTo('more'));
+        document.getElementById('btn-change-mode').addEventListener('click', () => AuthSession.openAuthPrompt());
+      },
+
+      navigateTo(viewName) {
+        document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+        const target = document.getElementById(`view-${viewName}`);
+        if (target) target.classList.add('active');
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+          item.classList.toggle('active', item.dataset.nav === viewName);
+        });
+
+        if (viewName === 'home') HomeView.render();
+        if (viewName === 'classes') ClassesView.render();
+        if (viewName === 'exams') ExamsView.render();
+        if (viewName === 'plans') PlansView.render();
+        document.getElementById('main-content').scrollTop = 0;
+      }
+    };
+
+    const HomeView = {
+      render() {
+        const greetingEl = document.getElementById('home-greeting');
+        const cardTitle = document.getElementById('home-status-title');
+        const cardDesc = document.getElementById('home-status-desc');
+        const timeline = document.getElementById('day-timeline');
+        timeline.innerHTML = '';
+
+        const simulatedDate = new Date(2026, 9, 7);
+        document.getElementById('home-date').textContent = simulatedDate.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+        if (AuthSession.isIdentified) {
+          greetingEl.textContent = `Hola ${AuthSession.userEmail.split('@')[0]} 👋`;
+          cardTitle.textContent = `${DATA_REPO[AuthSession.career].name}`;
+          
+          // Buscar si hay exámenes próximos
+          const exams = ExamsManager.getAll().filter(e => e.careerKey === AuthSession.career);
+          if (exams.length > 0) {
+            exams.sort((a, b) => new Date(a.date) - new Date(b.date));
+            const nextExam = exams[0];
+            const days = ExamsView.daysRemaining(nextExam.date);
+            cardDesc.innerHTML = `<span>📝 <strong>Próximo Examen:</strong> ${nextExam.subject} (${nextExam.date} en ${nextExam.room}) • Faltan ${days} días</span>`;
+          } else {
+            cardDesc.innerHTML = `<span>Año: ${AuthSession.year}.° • No tenés mesas de examen próximas registradas.</span>`;
+          }
+
+          const studentClasses = DATA_REPO[AuthSession.career].classes.filter(c => c.year === AuthSession.year);
+          if (studentClasses.length === 0) {
+            timeline.innerHTML = '<p style="font-size:12px; color:var(--text-muted); padding:10px 0;">Sin cursadas registradas para tu año hoy.</p>';
+          } else {
+            studentClasses.forEach(c => {
+              const item = document.createElement('div');
+              item.className = 'timeline-item';
+              item.innerHTML = `
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <div>
+                    <strong style="font-size:13px;">${c.name}</strong>
+                    <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">📍 ${c.room} • ${c.teacher}</div>
+                  </div>
+                  <span style="font-size:12px; font-weight:700; color:var(--primary);">${c.startTime} hs</span>
+                </div>
+              `;
+              timeline.appendChild(item);
+            });
+          }
+        } else {
+          greetingEl.textContent = 'Facultad de Arte y Diseño 👋';
+          cardTitle.textContent = 'Información General FAyD';
+          cardDesc.innerHTML = '<span>Consultá los horarios oficiales de cursada, mesas de examen y planes de estudio.</span>';
+          timeline.innerHTML = '<p style="font-size:12px; color:var(--text-muted); padding:10px 0;">Identificate con tu correo para personalizar tus horarios y mesas.</p>';
+        }
+      }
+    };
+
+    const ClassesView = {
+      selectedYear: 1,
+      selectedDay: 'todos',
+
+      init() {
+        document.getElementById('classes-career-select').addEventListener('change', () => this.render());
+
+        document.querySelectorAll('#classes-year-filter .pill-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            this.setYear(parseInt(btn.dataset.year));
+            this.render();
+          });
+        });
+
+        document.querySelectorAll('#classes-day-filter .pill-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('#classes-day-filter .pill-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            this.selectedDay = btn.dataset.day;
+            this.render();
+          });
+        });
+      },
+
+      setYear(yr) {
+        this.selectedYear = yr;
+        document.querySelectorAll('#classes-year-filter .pill-btn').forEach(b => {
+          b.classList.toggle('active', parseInt(b.dataset.year) === yr);
+        });
+      },
+
+      render() {
+        const careerKey = document.getElementById('classes-career-select').value;
+        const career = DATA_REPO[careerKey];
+        const listEl = document.getElementById('classes-list');
+        listEl.innerHTML = '';
+
+        let items = career.classes.filter(c => c.year === this.selectedYear);
+        if (this.selectedDay !== 'todos') {
+          items = items.filter(c => c.day === this.selectedDay);
+        }
+
+        if (items.length === 0) {
+          listEl.innerHTML = '<p style="text-align:center; padding:24px; color:var(--text-muted); font-size:13px;">No hay materias registradas para este año o día.</p>';
+          return;
+        }
+
+        items.forEach(c => {
+          const card = document.createElement('div');
+          card.className = 'item-card';
+          card.innerHTML = `
+            <div>
+              <div class="card-title">${c.name}</div>
+              <div class="card-meta">
+                <span class="card-meta-pill">🗓 ${c.day}</span>
+                <span class="card-meta-pill">🕐 ${c.startTime} a ${c.endTime} hs</span>
+                <span class="card-meta-pill">📍 ${c.room}</span>
+              </div>
+              <p style="font-size:12px; color:var(--text-secondary); margin-top:6px;">👨‍🏫 ${c.teacher}</p>
+            </div>
+          `;
+          listEl.appendChild(card);
+        });
+      }
+    };
+
+    const PlansView = {
+      selectedPlanYear: 'todos',
+
+      init() {
+        document.getElementById('plans-career-select').addEventListener('change', () => this.render());
+
+        document.querySelectorAll('#plans-year-filter .pill-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('#plans-year-filter .pill-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            this.selectedPlanYear = btn.dataset.pyear;
+            this.render();
+          });
+        });
+      },
+
+      render() {
+        const careerKey = document.getElementById('plans-career-select').value;
+        const career = DATA_REPO[careerKey];
+        const listEl = document.getElementById('plans-list');
+        listEl.innerHTML = '';
+
+        let items = career.plan;
+        if (this.selectedPlanYear !== 'todos') {
+          items = items.filter(p => p.year === parseInt(this.selectedPlanYear));
+        }
+
+        if (items.length === 0) {
+          listEl.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text-muted); font-size:13px;">Sin asignaturas para este año.</p>';
+          return;
+        }
+
+        items.forEach(p => {
+          const card = document.createElement('div');
+          card.className = 'item-card';
+          card.innerHTML = `
+            <div style="width:100%;">
+              <div class="card-title">${p.name}</div>
+              <div class="card-meta">
+                <span class="card-meta-pill">${p.year}.° Año</span>
+                <span class="card-meta-pill">Régimen: ${p.reg}</span>
+                <span class="card-meta-pill">Condición: ${p.cond}</span>
+              </div>
+              <div class="correlativa-box">
+                <strong>Correlatividad:</strong> ${p.cor}
+              </div>
+            </div>
+          `;
+          listEl.appendChild(card);
+        });
+      }
+    };
+
+    const MapView = {
+      init() {
+        document.querySelectorAll('#floor-filter .pill-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('#floor-filter .pill-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const floor = btn.dataset.floor;
+            document.getElementById('svg-floor-pb').style.display = floor === 'pb' ? 'block' : 'none';
+            document.getElementById('svg-floor-pa').style.display = floor === 'pa' ? 'block' : 'none';
+          });
+        });
+
+        document.querySelectorAll('.map-room').forEach(r => {
+          r.addEventListener('click', () => {
+            document.querySelectorAll('.map-room').forEach(el => el.classList.remove('active'));
+            r.classList.add('active');
+            const card = document.getElementById('map-selection-card');
+            card.classList.remove('hidden');
+            document.getElementById('map-selection-title').textContent = r.dataset.name;
+          });
+        });
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      Navigation.init();
+      ClassesView.init();
+      ExamsView.init();
+      PlansView.init();
+      MapView.init();
+      AuthSession.init();
+
+      document.getElementById('form-login').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('input-email').value.trim();
+        const career = document.getElementById('input-career').value;
+        const year = document.getElementById('input-year').value;
+        if (email) AuthSession.login(email, career, year);
+      });
+
+      document.getElementById('btn-guest-access').addEventListener('click', () => {
+        AuthSession.enterAsGuest();
+      });
+
+      const darkToggle = document.getElementById('darkmode-toggle');
+      darkToggle.addEventListener('change', (e) => {
+        document.body.classList.toggle('dark-mode', e.target.checked);
+      });
+    });
+  </script>
+</body>
+</html>
